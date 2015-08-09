@@ -41,6 +41,11 @@ FlashValues[0x59]	= "Auto, Fired, Red-eye reduction"
 FlashValues[0x5d]	= "Auto, Fired, Red-eye reduction, Return not detected"
 FlashValues[0x5f]	= "Auto, Fired, Red-eye reduction, Return detected"
 
+# Global values used to print the report
+FlashReport = {}
+totalPhotos = 0
+noFlashInfo = 0
+
 # Get specific EXIF field values
 #
 # Returne: EXIF value for field, or None type
@@ -66,20 +71,28 @@ def getImageFlashInfo(file) :
     return -1 
     
 def handleFile(file) :
-  global verbose
-  
+  global verbose, totalPhotos, noFlashInfo
+
   val = getImageFlashInfo(file)
 
   if val == -1:
     if verbose:
       print "File is not an Image [\"" + file + "\"]"
+    return
   elif val is None:
     print "Flash Value not defined in EXIF for [\"" + file + "\"]"
+    noFlashInfo += 1
   else:
     if val in FlashValues: 
       print "[\"" + file + "\", \"" + FlashValues[val] + "\"]"
+      if val in FlashReport:
+        FlashReport[val] += 1
+      else:
+        FlashReport[val] = 1
     else:
       print "Unable to find Flash Value [\"{}\", \"{}\"]".format(file, val)
+      
+  totalPhotos += 1
 
 def processFile(file) :
   if os.path.isfile(file) == False:
@@ -111,6 +124,19 @@ def processDir(dir) :
       processDir(fullPath)
     else:  
       handleFile(fullPath)
+      
+def printFlashReport() :
+  print ""
+  print "Camera Flash Report"
+  print "Total Photos Scanned: ", totalPhotos
+  print "Photos Without Flash Info: ", noFlashInfo
+  print ""
+  for key in FlashValues:
+    val = 0
+    if key in FlashReport:
+      val = FlashReport[key]
+    print val, FlashValues[key]
+  print ""
 
 ################# Start Main #########################
 
@@ -128,3 +154,6 @@ if os.path.isdir(path):
   processDir(path)  
 else:
   processFile(path)
+  
+  
+printFlashReport()
