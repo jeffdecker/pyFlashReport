@@ -61,13 +61,15 @@ def getImageEXIFInfo(file) :
     return image._getexif()
   except IOError:
     return None
+  except AttributeError:
+    return None
     
 def getImageFlashInfo(file) :
   exifData = getImageEXIFInfo(file)
   if exifData is not None:
     return get_field(exifData,'Flash')
   else:
-    #print "Not an Image"
+    #print "Not an Photo"
     return -1 
     
 def handleFile(file) :
@@ -77,7 +79,7 @@ def handleFile(file) :
 
   if val == -1:
     if verbose:
-      print "File is not an Image [\"" + file + "\"]"
+      print "File is not an Photo [\"" + file + "\"]"
     return
   elif val is None:
     print "Flash Value not defined in EXIF for [\"" + file + "\"]"
