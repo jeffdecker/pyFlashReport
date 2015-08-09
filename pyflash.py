@@ -9,6 +9,7 @@ from PIL import Image
 from PIL.ExifTags import TAGS
 
 VERSION = "v0.2.0"
+verbose = False
 
 # Use a dictionary to define or EXIF Flash values in human readable form
 FlashValues = {}
@@ -65,10 +66,13 @@ def getImageFlashInfo(file) :
     return -1 
     
 def handleFile(file) :
+  global verbose
+  
   val = getImageFlashInfo(file)
 
   if val == -1:
-    print "File is not an Image [\"" + file + "\"]"
+    if verbose:
+      print "File is not an Image [\"" + file + "\"]"
   elif val is None:
     print "Flash Value not defined in EXIF for [\"" + file + "\"]"
   else:
