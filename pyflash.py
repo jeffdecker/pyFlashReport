@@ -40,8 +40,6 @@ FlashValues[0x59]	= "Auto, Fired, Red-eye reduction"
 FlashValues[0x5d]	= "Auto, Fired, Red-eye reduction, Return not detected"
 FlashValues[0x5f]	= "Auto, Fired, Red-eye reduction, Return detected"
 
-parentDir = ""
-
 # Get specific EXIF field values
 #
 # Returne: EXIF value for field, or None type
@@ -93,9 +91,6 @@ def processDir(dir) :
   if os.path.isdir(dir) == False:
     print "Invalid dir passed into processDir [" + dir + "]"
     return
-  
-  #global parentDir 
-  #parentDir += dir + "/"
    
   listing = os.listdir(dir)
   for infile in listing:
@@ -126,7 +121,6 @@ path = sys.argv[1]
 
 # Now check if param is a file or folder and call correct process
 if os.path.isdir(path):
-  parentDir = ""
   processDir(path)  
 else:
   processFile(path)
